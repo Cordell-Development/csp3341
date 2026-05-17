@@ -1,11 +1,41 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Api usages" %>
+<% content_for :title, "API Usage" %>
 
-<h1>Api usages</h1>
+<h1>API Usage</h1>
 
-<div id="api_usages">
-  <% @api_usages.each do |api_usage| %>
-    <%= render "api_usage", api_usage: api_usage %>
-  <% end %>
-</div>
+<%= link_to "Back to dashboard", root_path %>
+
+<section>
+  <h2>Overview</h2>
+  <ul>
+    <li>Total API calls: <strong><%= @total %></strong></li>
+    <li>Cache hits: <strong><%= @cache_hits %></strong></li>
+    <li>Cache hit ratio: <strong><%= @hit_ratio %>%</strong></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Top locations</h2>
+  <ol>
+    <% @top_locations.each do |city, count| %>
+      <li><%= city %> — <%= count %> calls</li>
+    <% end %>
+  </ol>
+</section>
+
+<section>
+  <h2>Recent activity</h2>
+  <table>
+    <tr><th>When</th><th>User</th><th>Location</th><th>Endpoint</th><th>Cache</th></tr>
+    <% @recent.each do |usage| %>
+      <tr>
+        <td><%= time_ago_in_words(usage.created_at) %> ago</td>
+        <td><%= usage.user&.email_address || "—" %></td>
+        <td><%= usage.location&.city_name || "—" %></td>
+        <td><%= usage.endpoint %></td>
+        <td><%= usage.cache_hit? ? "HIT" : "MISS" %></td>
+      </tr>
+    <% end %>
+  </table>
+</section>

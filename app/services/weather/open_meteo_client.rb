@@ -21,7 +21,7 @@ module Weather
           longitude: location.longitude
         })
 
-        cache_key = "open_meteo:#{name}:#{location.id}"
+        cache_key = "open_meteo:#{location.id}"
         cache_hit = Rails.cache.exist?(cache_key)
 
         data = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
@@ -32,7 +32,7 @@ module Weather
           JSON.parse(res.body)
         end
 
-        ApiUsage.create!(user: user, location: location, endpoint: name.to_s, cache_hit: cache_hit)
+        ApiUsage.create!(user: user, location: location, endpoint: API_URL, cache_hit: cache_hit)
         data
       end
     end

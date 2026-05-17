@@ -1,0 +1,37 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Location Management" %>
+
+<h1>Location Management</h1>
+
+<%= link_to "Back to dashboard", root_path %>
+
+<div>
+    <p>Total cities: <%= Location.count %></p>
+    <p>Total blacklisted: <%= @total_blacklisted %></p>
+</div>
+
+<%= form_with url: admin_locations_path, method: :get, local: true do |f| %>
+    <%= f.text_field :q, value: @query, placeholder: "City name" %>
+    <%= f.select :scope, [["All locations", ""], ["Blacklisted only", "blacklisted"]], selected: @scope %>
+    <%= f.submit "Filter" %>
+<% end %>
+
+<table>
+    <tr><th>City</th><th>Latitude</th><th>Longitude</th><th>Status</th><th>Actions</th></tr>
+    <% @locations.each do |loc| %>
+        <tr>
+            <td><%= loc.city_name %></td>
+            <td><%= loc.latitude %></td>
+            <td><%= loc.longitude %></td>
+            <td><%= loc.blacklisted? ? "Blacklisted" : "Active" %></td>
+            <td>
+                <%= button_to (loc.blacklisted? ? "Unblacklist" : "Blacklist"), admin_location_path(loc), method: :patch %>
+            </td>
+        </tr>
+    <% end %>
+</table>
+
+<% if @locations.size == 100 %>
+    <p><em>Showing first 100 results. Refine your search to see more.</em></p>
+<% end %>

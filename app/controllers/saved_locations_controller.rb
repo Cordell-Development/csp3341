@@ -3,7 +3,14 @@ class SavedLocationsController < ApplicationController
 
   # GET /saved_locations or /saved_locations.json
   def index
-    @saved_locations = SavedLocation.all
+    @saved = Current.user.saved_locations.includes(:location)
+    @weather = @saved.each_with_object({}) do |sl, hash|
+      hash[sl.location.id] = {
+        current_day: Weather::WeatherClient.current_day(sl.location, Current.user),
+        forecast: Weather::WeatherClient.forecast(sl.location, Current.user),
+        history: Weather::WeatherClient.history(sl.location, Current.user)
+      }
+    end
   end
 
   # GET /saved_locations/1 or /saved_locations/1.json

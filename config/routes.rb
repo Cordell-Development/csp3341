@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root "saved_locations#index"
   resources :api_usages
   resources :saved_locations
   resources :locations

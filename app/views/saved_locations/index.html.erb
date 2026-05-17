@@ -1,3 +1,4 @@
+<p style="color: green"><%= notice %></p>
 <h1>Weather Dashboard</h1>
 <div>
     <% @saved.each do |sl| %>
@@ -44,4 +45,5 @@
             <%= button_to "Remove", saved_location_path(sl), method: :delete, data: { turbo_confirm: "Remove #{loc.city_name}?" } %>
         </article>
     <% end %>
+  <%= link_to "Save another location", locations_path %>
 </div>

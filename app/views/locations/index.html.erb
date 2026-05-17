@@ -1,0 +1,27 @@
+<p style="color: green"><%= notice %></p>
+<h1>Search locations</h1>
+
+  <%= link_to "Back to dashboard", root_path %>
+
+  <%= form_with url: locations_path, method: :get, local: true do |f| %>
+    <%= f.text_field :q, value: @query, placeholder: "City name", autofocus: true %>
+    <%= f.submit "Search" %>
+  <% end %>
+
+  <% if @query.present? && @locations.empty? %>
+    <p>No matches for "<%= @query %>".</p>
+  <% end %>
+
+  <% if @locations.any? %>
+    <ul>
+      <% @locations.each do |loc| %>
+        <% unless @saved_locations.pluck(:location_id).include?(loc.id)  %>
+            <li>
+                <%= loc.city_name %>
+                (<%= loc.latitude.round(2) %>, <%= loc.longitude.round(2) %>)
+                <%= button_to "Add", saved_locations_path, params: { location_id: loc.id }, method: :post %>
+            </li>
+        <% end %>
+      <% end %>
+    </ul>
+  <% end %>

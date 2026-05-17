@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_033247) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_17_113721) do
   create_table "api_usages", force: :cascade do |t|
     t.boolean "cache_hit", default: false, null: false
     t.datetime "created_at", null: false
@@ -29,6 +29,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_033247) do
     t.float "latitude", null: false
     t.float "longitude", null: false
     t.datetime "updated_at", null: false
+    t.index ["city_name"], name: "index_locations_on_city_name"
     t.index ["latitude", "longitude"], name: "index_locations_on_latitude_and_longitude", unique: true
   end
 

@@ -1,49 +1,80 @@
 <p style="color: green"><%= notice %></p>
-<h1>Weather Dashboard</h1>
-<div>
+<div class="flex flex-col h-full gap-10 mb-12">
     <% @saved.each do |sl| %>
-        <% loc = sl.location %>
-        <% forecast = @weather[loc.id] %>
-
-        <article>
-            <h2><%= loc.city_name %><%= " (Current location)" if sl.current_location? %></h2>
-            <p>
-                Now: <%= forecast.dig("current", "temperature_2m") %>°C,
-                <%= forecast.dig("current", "relative_humidity_2m") %>% humidity
-            </p>
-            <p>
-                Today: <%= forecast.dig("daily", "temperature_2m_max", 7) %>°C /
-                    <%= forecast.dig("daily", "temperature_2m_min", 7) %>°C
-            </p>
-            <details>
-                <summary>Hourly (today)</summary>
-                <table>
-                <tr><th>Time</th><th>Temperature</th><th>Humidity</th><th>Rain (mm)</th></tr>
-                <% times = forecast.dig("hourly", "time").slice(168, 24) %>
-                <% temps = forecast.dig("hourly", "temperature_2m").slice(168, 24) %>
-                <% humidity = forecast.dig("hourly", "relative_humidity_2m").slice(168, 24) %>
-                <% rain = forecast.dig("hourly", "rain").slice(168, 24) %>
-                <% times.each_with_index do |t, i| %>
-                    <tr>
-                    <td><%= Time.parse(t).strftime("%H:%M") %></td>
-                    <td><%= temps[i] %>°C</td>
-                    <td><%= humidity[i] %>%</td>
-                    <td><%= rain[i] %></td>
-                    </tr>
-                <% end %>
-                </table>
-            </details>
-            <details>
-                <summary>Previous 7 days</summary>
-                <%= render "daily_table", daily: forecast["daily"], start: 0, length: 7 %> 
-            </details>
-            <details>
-                <summary>Next 7 days</summary>
-                <%= render "daily_table", daily: forecast["daily"], start: 8, length: 7 %> 
-            </details>
-
-            <%= button_to "Remove", saved_location_path(sl), method: :delete, data: { turbo_confirm: "Remove #{loc.city_name}?" } %>
-        </article>
+        <div class="flex border rounded-lg border-gray-200 shadow-md py-5 px-10 w-full">
+            <% loc = sl.location %>
+            <% forecast = @weather[loc.id] %>
+    
+            <article class="flex flex-col w-full">
+                <h2 class="text-xl font-semibold border-b-1 border-gray-300 pb-4 mb-4 w-full"><%= loc.city_name %><%= " (Current location)" if sl.current_location? %></h2>
+                <div class="grid grid-cols-2 w-full text-center text-lg">
+                    <p class="border-r-1 border-l-1 border-gray-300">
+                        Now:<br><%= forecast.dig("current", "temperature_2m") %>°C,
+                        <%= forecast.dig("current", "relative_humidity_2m") %>% humidity
+                    </p>
+                    <p class="border-r-1 border-gray-300">
+                        Today:<br><%= forecast.dig("daily", "temperature_2m_max", 7) %>°C /
+                            <%= forecast.dig("daily", "temperature_2m_min", 7) %>°C
+                    </p>
+                </div>
+                <div class="border-b-1 border-gray-300 my-4 w-full"></div>
+                <div class="flex flex-col gap-4">
+                    <details class="px-3 pt-2 pb-1 border border-gray-300 rounded-md group h-fit">
+                        <summary class="flex list-none flex-wrap">
+                            <div class="flex w-full cursor-pointer hover:underline justify-between items-center">
+                                <span>Hourly (today)</span>
+                                <svg class="h-8 w-8 rotate-0 transform text-gray-400 transition-transform duration-300 group-open:rotate-90" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M25 32.4l-9.7-9.7 1.4-1.4 8.3 8.3 8.3-8.3 1.4 1.4z"/>
+                                </svg>
+                            </div>
+                            <div class="w-full max-h-px overflow-hidden transition-all duration-500 ease-in-out group-open:max-h-screen">
+                                <table class="w-full text-left">
+                                    <tr><th>Time</th><th>Temperature</th><th>Humidity</th><th>Rain (mm)</th></tr>
+                                    <% times = forecast.dig("hourly", "time").slice(168, 24) %>
+                                    <% temps = forecast.dig("hourly", "temperature_2m").slice(168, 24) %>
+                                    <% humidity = forecast.dig("hourly", "relative_humidity_2m").slice(168, 24) %>
+                                    <% rain = forecast.dig("hourly", "rain").slice(168, 24) %>
+                                    <% times.each_with_index do |t, i| %>
+                                        <tr>
+                                        <td><%= Time.parse(t).strftime("%H:%M") %></td>
+                                        <td><%= temps[i] %>°C</td>
+                                        <td><%= humidity[i] %>%</td>
+                                        <td><%= rain[i] %></td>
+                                        </tr>
+                                    <% end %>
+                                </table>
+                            </div>
+                        </summary>
+                    </details>
+                    <details class="px-3 pt-2 pb-1 border border-gray-300 rounded-md group h-fit">
+                        <summary class="flex list-none flex-wrap">
+                            <div class="flex w-full cursor-pointer hover:underline justify-between items-center">
+                                <span>Previous 7 days</span>
+                                <svg class="h-8 w-8 rotate-0 transform text-gray-400 transition-transform duration-300 group-open:rotate-90" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M25 32.4l-9.7-9.7 1.4-1.4 8.3 8.3 8.3-8.3 1.4 1.4z"/>
+                                </svg>
+                            </div>
+                            <div class="w-full max-h-px overflow-hidden transition-all duration-500 ease-in-out group-open:max-h-screen">
+                                <%= render "daily_table", daily: forecast["daily"], start: 0, length: 7 %>
+                            </div>
+                        </summary>
+                    </details>
+                    <details class="px-3 pt-2 pb-1 border border-gray-300 rounded-md group h-fit">
+                        <summary class="flex list-none flex-wrap">
+                            <div class="flex w-full cursor-pointer hover:underline justify-between items-center">
+                                <span>Next 7 days</span>
+                                <svg class="h-8 w-8 rotate-0 transform text-gray-400 transition-transform duration-300 group-open:rotate-90" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M25 32.4l-9.7-9.7 1.4-1.4 8.3 8.3 8.3-8.3 1.4 1.4z"/>
+                                </svg>
+                            </div>
+                            <div class="w-full max-h-px overflow-hidden transition-all duration-500 ease-in-out group-open:max-h-screen">
+                                <%= render "daily_table", daily: forecast["daily"], start: 8, length: 7 %>
+                            </div>
+                        </summary>
+                    </details>
+                    <%= button_to "Remove", saved_location_path(sl), method: :delete, form: { class: "flex w-full justify-end" }, data: { turbo_confirm: "Remove #{loc.city_name}?" }, class: "text-red-600 hover:underline hover:cursor-pointer" %>
+                </div>
+            </article>
+        </div>
     <% end %>
-  <%= link_to "Save another location", locations_path %>
 </div>

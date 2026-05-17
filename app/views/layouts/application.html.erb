@@ -23,7 +23,23 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="h-screen flex flex-col">
+    <% if Current.user %>
+      <nav class="fixed px-10 pt-7 pb-6 border-b-1 border-gray-200 shadow-sm flex justify-between items-center w-full">
+        <%= link_to "Weather Dashboard", root_path, class: "font-semibold text-2xl" %>
+        <div class="flex gap-10 w-fit h-fit text-lg">
+          <%= link_to "Search Locations", locations_path, class: "hover:underline" %>
+          <% if Current.user.admin? %>
+            <%= link_to "Users", admin_users_path, class: "hover:underline" %>
+            <%= link_to "Admin Location Management", admin_locations_path, class: "hover:underline" %>
+            <%= link_to "API Usage", admin_api_usages_path, class: "hover:underline" %>
+          <% end %>
+          <%= button_to "Log out", session_path, method: :delete, form: { class: "inline" }, class: "text-red-600 hover:underline hover:cursor-pointer" %>
+        </div>
+      </nav>
+    <% end %>
+    <main class="mx-auto mt-36 max-w-4xl h-full w-full">
+      <%= yield %>
+    </main>
   </body>
 </html>

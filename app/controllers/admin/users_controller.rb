@@ -8,7 +8,7 @@ class Admin::UsersController < Admin::BaseController
 
   def update
     user = User.find(params[:id])
-    redirect_to admin_users_path, alert: "You can't remove the admin role from yourself" if user == Current.user
+    return redirect_to admin_users_path, alert: "You can't remove the admin role from yourself" if user == Current.user
 
     toggled_role = user.user? ? :admin : :user
     user.update!(role: toggled_role)
@@ -17,7 +17,7 @@ class Admin::UsersController < Admin::BaseController
 
   def destroy
     user = User.find(params[:id])
-    redirect_to admin_users_path, alert: "You can't delete yourself" if user == Current.user
+    return redirect_to admin_users_path, alert: "You can't delete yourself" if user == Current.user
 
     user.destroy!
     redirect_to admin_users_path, notice: "Deleted #{user.email_address}"

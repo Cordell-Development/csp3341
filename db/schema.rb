@@ -10,7 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_025628) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_17_033247) do
+  create_table "api_usages", force: :cascade do |t|
+    t.boolean "cache_hit", default: false, null: false
+    t.datetime "created_at", null: false
+    t.string "endpoint", null: false
+    t.integer "location_id"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["location_id"], name: "index_api_usages_on_location_id"
+    t.index ["user_id"], name: "index_api_usages_on_user_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.boolean "blacklisted", default: false, null: false
+    t.string "city_name", null: false
+    t.datetime "created_at", null: false
+    t.float "latitude", null: false
+    t.float "longitude", null: false
+    t.datetime "updated_at", null: false
+    t.index ["latitude", "longitude"], name: "index_locations_on_latitude_and_longitude", unique: true
+  end
+
+  create_table "saved_locations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "current_location", default: false, null: false
+    t.integer "location_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["location_id"], name: "index_saved_locations_on_location_id"
+    t.index ["user_id", "location_id"], name: "index_saved_locations_on_user_id_and_location_id", unique: true
+    t.index ["user_id"], name: "index_saved_locations_on_user_current_location", unique: true, where: "current_location = 1"
+    t.index ["user_id"], name: "index_saved_locations_on_user_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -24,9 +57,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_025628) do
     t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "password_digest", null: false
+    t.string "role", default: "user", null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "api_usages", "locations"
+  add_foreign_key "api_usages", "users"
+  add_foreign_key "saved_locations", "locations"
+  add_foreign_key "saved_locations", "users"
   add_foreign_key "sessions", "users"
 end

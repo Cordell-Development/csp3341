@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Saved locations" %>
+
+<h1>Saved locations</h1>
+
+<div id="saved_locations">
+  <% @saved_locations.each do |saved_location| %>
+    <%= render saved_location %>
+    <p>
+      <%= link_to "Show this saved location", saved_location %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New saved location", new_saved_location_path %>

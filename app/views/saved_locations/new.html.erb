@@ -1,0 +1,11 @@
+<% content_for :title, "New saved location" %>
+
+<h1>New saved location</h1>
+
+<%= render "form", saved_location: @saved_location %>
+
+<br>
+
+<div>
+  <%= link_to "Back to saved locations", saved_locations_path %>
+</div>

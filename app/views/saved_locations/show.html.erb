@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @saved_location %>
+
+<div>
+  <%= link_to "Edit this saved location", edit_saved_location_path(@saved_location) %> |
+  <%= link_to "Back to saved locations", saved_locations_path %>
+
+  <%= button_to "Destroy this saved location", @saved_location, method: :delete %>
+</div>

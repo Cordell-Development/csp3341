@@ -1,29 +1,11 @@
 class SavedLocationsController < ApplicationController
-  before_action :set_saved_location, only: %i[ show edit update destroy ]
+  before_action :set_saved_location, only: %i[ destroy ]
 
-  # GET /saved_locations or /saved_locations.json
   def index
     @saved = Current.user.saved_locations.includes(:location)
     @weather = @saved.each_with_object({}) do |sl, hash|
-      hash[sl.location.id] = {
-        current_day: Weather::WeatherClient.current_day(sl.location, Current.user),
-        forecast: Weather::WeatherClient.forecast(sl.location, Current.user),
-        history: Weather::WeatherClient.history(sl.location, Current.user)
-      }
+      hash[sl.location.id] = Weather::WeatherClient.fetch_all(sl.location, Current.user)
     end
-  end
-
-  # GET /saved_locations/1 or /saved_locations/1.json
-  def show
-  end
-
-  # GET /saved_locations/new
-  def new
-    @saved_location = SavedLocation.new
-  end
-
-  # GET /saved_locations/1/edit
-  def edit
   end
 
   # POST /saved_locations or /saved_locations.json
@@ -36,19 +18,6 @@ class SavedLocationsController < ApplicationController
         format.json { render :show, status: :created, location: @saved_location }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @saved_location.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /saved_locations/1 or /saved_locations/1.json
-  def update
-    respond_to do |format|
-      if @saved_location.update(saved_location_params)
-        format.html { redirect_to @saved_location, notice: "Saved location was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @saved_location }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @saved_location.errors, status: :unprocessable_entity }
       end
     end

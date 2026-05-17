@@ -3,9 +3,7 @@
 module Weather
   module WeatherClient
     class << self
-      def current_day(location, user) = adapter.current_day(location, user)
-      def forecast(location, user) = adapter.forecast(location, user)
-      def history(location, user) = adapter.history(location, user)
+      def fetch_all(location, user) = adapter.fetch_all(location, user)
 
       private
       def adapter

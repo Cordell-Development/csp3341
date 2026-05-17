@@ -2,26 +2,26 @@
 <div>
     <% @saved.each do |sl| %>
         <% loc = sl.location %>
-        <% current_day, forecast, history = @weather[loc.id][:current_day], @weather[loc.id][:forecast], @weather[loc.id][:history] %>
+        <% forecast = @weather[loc.id] %>
 
         <article>
             <h2><%= loc.city_name %><%= " (Current location)" if sl.current_location? %></h2>
             <p>
-                Now: <%= current_day.dig("current", "temperature_2m") %>°C,
-                <%= current_day.dig("current", "relative_humidity_2m") %>% humidity
+                Now: <%= forecast.dig("current", "temperature_2m") %>°C,
+                <%= forecast.dig("current", "relative_humidity_2m") %>% humidity
             </p>
             <p>
-                Today: <%= forecast.dig("daily", "temperature_2m_max", 0) %>°C /
-                    <%= forecast.dig("daily", "temperature_2m_min", 0) %>°C
+                Today: <%= forecast.dig("daily", "temperature_2m_max", 7) %>°C /
+                    <%= forecast.dig("daily", "temperature_2m_min", 7) %>°C
             </p>
             <details>
                 <summary>Hourly (today)</summary>
                 <table>
                 <tr><th>Time</th><th>Temperature</th><th>Humidity</th><th>Rain (mm)</th></tr>
-                <% times = current_day.dig("hourly", "time") %>
-                <% temps = current_day.dig("hourly", "temperature_2m") %>
-                <% humidity = current_day.dig("hourly", "relative_humidity_2m") %>
-                <% rain = current_day.dig("hourly", "rain") %>
+                <% times = forecast.dig("hourly", "time").slice(168, 24) %>
+                <% temps = forecast.dig("hourly", "temperature_2m").slice(168, 24) %>
+                <% humidity = forecast.dig("hourly", "relative_humidity_2m").slice(168, 24) %>
+                <% rain = forecast.dig("hourly", "rain").slice(168, 24) %>
                 <% times.each_with_index do |t, i| %>
                     <tr>
                     <td><%= Time.parse(t).strftime("%H:%M") %></td>
@@ -34,11 +34,11 @@
             </details>
             <details>
                 <summary>Previous 7 days</summary>
-                <%= render "daily_table", daily: history["daily"] %> 
+                <%= render "daily_table", daily: forecast["daily"], start: 0, length: 7 %> 
             </details>
             <details>
                 <summary>Next 7 days</summary>
-                <%= render "daily_table", daily: forecast["daily"] %> 
+                <%= render "daily_table", daily: forecast["daily"], start: 8, length: 7 %> 
             </details>
 
             <%= button_to "Remove", saved_location_path(sl), method: :delete, data: { turbo_confirm: "Remove #{loc.city_name}?" } %>

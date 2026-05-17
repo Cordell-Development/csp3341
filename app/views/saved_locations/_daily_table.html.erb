@@ -1,6 +1,6 @@
 <table>
     <tr><th>Date</th><th>Max</th><th>Min</th><th>Humidity</th><th>Rain (mm)</th></tr>
-    <% daily["time"].each_with_index do |date, i| %>
+    <% daily["time"].slice(start, length).each_with_index do |date, i| %>
       <tr>
         <td><%= date %></td>
         <td><%= daily["temperature_2m_max"][i] %>°</td>

@@ -6,11 +6,6 @@
 
 <div id="api_usages">
   <% @api_usages.each do |api_usage| %>
-    <%= render api_usage %>
-    <p>
-      <%= link_to "Show this api usage", api_usage %>
-    </p>
+    <%= render "api_usage", api_usage: api_usage %>
   <% end %>
 </div>
-
-<%= link_to "New api usage", new_api_usage_path %>

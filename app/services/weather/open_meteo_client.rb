@@ -5,34 +5,18 @@ module Weather
   class OpenMeteoClient
     API_URL = "https://api.open-meteo.com/v1/forecast"
     DEFAULT_PARAMS = {
-      current_day: {
-        hourly: "temperature_2m,relative_humidity_2m,rain",
-        current: "temperature_2m,relative_humidity_2m",
-        timezone: "auto",
-        forecast_days: "1"
-      },
-      forecast: {
-        daily: "temperature_2m_max,temperature_2m_min,rain_sum,relative_humidity_2m_mean",
-        timezone: "auto"
-      },
-      history: {
-        daily: "temperature_2m_max,temperature_2m_min,rain_sum,relative_humidity_2m_mean",
-        timezone: "auto",
-        past_days: "7",
-        forecast_days: "0"
-      }
+      daily: "temperature_2m_max,temperature_2m_min,rain_sum,relative_humidity_2m_mean",
+      hourly: "temperature_2m,relative_humidity_2m,rain",
+      current: "temperature_2m,relative_humidity_2m",
+      timezone: "auto",
+      forecast_days: "8",
+      past_days: "7"
     }.freeze
     private_constant :API_URL, :DEFAULT_PARAMS
 
     class << self
-      def current_day(location, user) = fetch(:current_day, location, user)
-      def forecast(location, user)    = fetch(:forecast, location, user)
-      def history(location, user)     = fetch(:history, location, user)
-
-      private
-
-      def fetch(name, location, user)
-        params = DEFAULT_PARAMS[name].merge({
+      def fetch_all(location, user)
+        params = DEFAULT_PARAMS.merge({
           latitude: location.latitude,
           longitude: location.longitude
         })
